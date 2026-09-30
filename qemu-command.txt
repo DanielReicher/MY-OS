@@ -1,0 +1,1 @@
+qemu-system-aarch64 -M virt -cpu cortex-a57 -m 256M -nographic -kernel kernel.elf
