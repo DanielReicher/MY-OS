@@ -1,0 +1,2 @@
+dd if=/dev/zero of=build/floppy.img bs=1024 count=1440
+dd if=build/boot.bin of=build/floppy.img conv=notrunc
