@@ -1,2 +1,10 @@
+cd /mnt/c/Users/Cyber_Magshimim
+
+nasm boot.asm -f bin -o build/boot.bin
+
+
 dd if=/dev/zero of=build/floppy.img bs=1024 count=1440
 dd if=build/boot.bin of=build/floppy.img conv=notrunc
+
+to run:
+qemu-system-i386 -fda build/floppy.img
