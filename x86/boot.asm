@@ -51,6 +51,8 @@ main:
 	mov si, msg_hello
 	call print
 
+	jmp enter_protected_mode
+
 	;configure and call read_sector to load sector 2 to 0
 	mov ax, 0x0000
 	mov es, ax ;dest segment
@@ -61,10 +63,10 @@ main:
 	mov dh, 0x00 ;head 0
 	call read_sector
 
-	;print the loaded data 
-	mov si, 0x0500 ; at 0x0500
-	call print
-	
+
+	; Jump to the kernel
+    ;jmp 0x0000:0x0500
+
 
 	hlt ;privileged instruction, stop executing until interrupt
 
@@ -77,6 +79,10 @@ main:
 ;0- null, end of the line
 msg_hello: db 'Hello, OS World!', 0x0D, 0x0A, 0 
 msg_reading_error db "Disk Read Error" , 0
+
+%include "switchTo32.asm"
+
+msg_protected: db 'Protected Mode is active', 0
 
 ;Fills the rest of the 512-byte boot sector with zeros
 ;$- currtent position in file, $$- beginning of the file
