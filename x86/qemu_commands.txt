@@ -1,5 +1,7 @@
 cd /mnt/c/Users/Cyber_Magshimim
 
+cd /mnt/c/Users/Cyber_Magshimim/documents/myprojects/my-os/x86
+
 nasm boot.asm -f bin -o build/boot.bin
 
 

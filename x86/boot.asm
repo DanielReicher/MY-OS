@@ -5,7 +5,7 @@ start:
     jmp main
 
 ;function to print
-puts:
+print:
 	push si ;save register
 	push ax ;save register
 
@@ -24,6 +24,18 @@ puts:
 	pop si ;restore register
 	ret ;return
 
+read_sector:
+	mov ah, 0x02 ;set the BIOS disk func to read sectors from drive
+	mov al, 0x01 ;the number of the sector we want to read (1)
+	int 0x13 ;calls BIOS disk services interrupt
+	jc .failed_reading ;if the carry flag is set the reading failed
+	ret
+
+.failed_reading:
+	mov si, msg_reading_error
+	call print
+	jmp $ ;infinite loop
+
 
 main:
 	xor ax, ax ;set ax to 0
@@ -37,7 +49,22 @@ main:
 	mov sp, 0x7C00
 
 	mov si, msg_hello
-	call puts
+	call print
+
+	;configure and call read_sector to load sector 2 to 0
+	mov ax, 0x0000
+	mov es, ax ;dest segment
+	mov bx, 0x0500 ;dest offsset
+	mov dl, 0x00 ;floppy's drive 0
+	mov ch, 0x00 ;cylinder 0
+	mov cl, 0x02 ;sector 2
+	mov dh, 0x00 ;head 0
+	call read_sector
+
+	;print the loaded data 
+	mov si, 0x0500 ; at 0x0500
+	call print
+	
 
 	hlt ;privileged instruction, stop executing until interrupt
 
@@ -49,6 +76,7 @@ main:
 ;0x0A- Line Feed, next line
 ;0- null, end of the line
 msg_hello: db 'Hello, OS World!', 0x0D, 0x0A, 0 
+msg_reading_error db "Disk Read Error" , 0
 
 ;Fills the rest of the 512-byte boot sector with zeros
 ;$- currtent position in file, $$- beginning of the file
