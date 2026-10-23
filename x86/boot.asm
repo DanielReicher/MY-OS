@@ -45,9 +45,8 @@ main:
 	call enter_protected_mode
 
 
-	hlt ;privileged instruction, stop executing until interrupt
-
 .halt: ;infinite loop
+	hlt ;privileged instruction, stop executing until interrupt
 	jmp .halt
 
 ;Message string
