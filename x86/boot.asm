@@ -24,18 +24,6 @@ print:
 	pop si ;restore register
 	ret ;return
 
-read_sector:
-	mov ah, 0x02 ;set the BIOS disk func to read sectors from drive
-	mov al, 0x01 ;the number of the sector we want to read (1)
-	int 0x13 ;calls BIOS disk services interrupt
-	jc .failed_reading ;if the carry flag is set the reading failed
-	ret
-
-.failed_reading:
-	mov si, msg_reading_error
-	call print
-	jmp $ ;infinite loop
-
 
 main:
 	xor ax, ax ;set ax to 0
@@ -51,22 +39,7 @@ main:
 	mov si, msg_hello
 	call print
 
-	jmp enter_protected_mode
-
-	;configure and call read_sector to load sector 2 to 0
-	mov ax, 0x0000
-	mov es, ax ;dest segment
-	mov bx, 0x0500 ;dest offsset
-	mov dl, 0x00 ;floppy's drive 0
-	mov ch, 0x00 ;cylinder 0
-	mov cl, 0x02 ;sector 2
-	mov dh, 0x00 ;head 0
-
-	call read_sector
-
-
-	; Jump to the kernel
-    jmp 0x000:0x0500
+	call enter_protected_mode
 
 
 	hlt ;privileged instruction, stop executing until interrupt
