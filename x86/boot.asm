@@ -51,7 +51,7 @@ main:
 	mov si, msg_hello
 	call print
 
-	call enter_protected_mode
+	jmp enter_protected_mode
 
 	;configure and call read_sector to load sector 2 to 0
 	mov ax, 0x0000
@@ -61,11 +61,12 @@ main:
 	mov ch, 0x00 ;cylinder 0
 	mov cl, 0x02 ;sector 2
 	mov dh, 0x00 ;head 0
+
 	call read_sector
 
 
 	; Jump to the kernel
-    ;jmp 0x0000:0x0500
+    jmp 0x000:0x0500
 
 
 	hlt ;privileged instruction, stop executing until interrupt

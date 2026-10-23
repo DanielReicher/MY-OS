@@ -54,15 +54,14 @@ protected_mode_entry:
     mov esi, msg_protected
     mov ah, 0x0A ;set color to green on black
 
-    .print:
-        lodsb
-        test al, al ;like or but doesnt change al. if al=0 zf is on
-        jz .halt
+.print:
+    lodsb
+    test al, al ;like or but doesnt change al. if al=0 zf is on
+    jz .halt
 
-        stosw
-        jmp .print
+    stosw
+    jmp .print
 
-    ret
 
 .halt:
     jmp .halt
