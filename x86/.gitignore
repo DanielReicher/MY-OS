@@ -1,0 +1,4 @@
+build
+test.o
+test.out
+test.bin
