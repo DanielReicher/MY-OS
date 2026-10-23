@@ -1,4 +1,7 @@
-org 0x7C00 ;tells the program to start in the address the bios look for the bootloader
+; The CPU loads the bootloader from the first sector in memory into location
+; 0x7C00 at RAM. The `org` instruction tells `nasm` to expect this assembly code
+; to run from that address in RAM.
+org 0x7C00
 bits 16 ;before booting, we are in real mode (16 bits)
 
 start:
