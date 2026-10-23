@@ -51,7 +51,7 @@ main:
 	mov si, msg_hello
 	call print
 
-	jmp enter_protected_mode
+	call enter_protected_mode
 
 	;configure and call read_sector to load sector 2 to 0
 	mov ax, 0x0000
