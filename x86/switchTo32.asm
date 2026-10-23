@@ -62,7 +62,7 @@ protected_mode_entry:
         stosw
         jmp .print
 
-        ret
+    ret
 
 .halt:
     jmp .halt
