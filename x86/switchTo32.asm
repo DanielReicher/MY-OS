@@ -59,7 +59,7 @@ protected_mode_entry:
     test al, al ;like or but doesnt change al. if al=0 zf is on
     jz $
 
-    stosw
+    stosw ;stores ax into the memory address pointed by es:di 
     jmp .print
 
 configure:
