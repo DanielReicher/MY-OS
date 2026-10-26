@@ -28,30 +28,16 @@ BIN := $(BUILD_DIR)/boot.bin
 run: $(IMG)
 	qemu-system-i386 -fda $(IMG)
 
-<<<<<<< HEAD
-$(IMG): $(BIN) test.out
-	dd if=/dev/zero of=$@ bs=1024 count=1440
-	dd if=$(BIN) of=$@ conv=notrunc
-	dd if=test.out of=build/floppy.img conv=notrunc seek=1
-=======
 $(IMG): $(BIN) test.bin | $(BUILD_DIR)
 	@# Make sure we build the file completely from scratch.
 	rm -f $@
 	dd if=/dev/zero of=$@ bs=1024 count=1440
 	dd if=$(BIN) of=$@ conv=notrunc
 	dd if=test.bin of=$@ conv=notrunc bs=512 seek=1
->>>>>>> 0116f3e19606242c650d2cac3f0e80eeef25b4eb
 
 $(BIN): $(SRC) | $(BUILD_DIR)
 	nasm $(BOOT) -f bin -o $@
 
-<<<<<<< HEAD
-test.o : test.c 
-	gcc test.c -march=i386 -m32 -c -ffreestanding -nostdlib
-
-test.out : test.o
-	ld -m elf_i386 -Ttext 0x200 test.o -o test.out
-=======
 test.o: test.c
 	$(CC) -nostdlib -ffreestanding -nostartfiles test.c -c -o test.o
 
@@ -70,4 +56,3 @@ $(BUILD_DIR):
 clean:
 	rm -r -f build
 	rm -f test.o test.out test.bin
->>>>>>> 0116f3e19606242c650d2cac3f0e80eeef25b4eb
