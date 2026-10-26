@@ -43,7 +43,7 @@ test.o: test.c
 
 test.out: test.o
 	$(LD) -m elf_i386 -Ttext 0x7E00 -e 0 -o test.out test.o
-
+	
 test.bin: test.out
 	@# The `-O` flag specifies the output format.
 	$(OBJCOPY) -O binary test.out test.bin

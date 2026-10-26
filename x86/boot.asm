@@ -39,7 +39,7 @@ configure:
 
 read_sector:
     mov ah, 0x02 ;set the BIOS disk func to read sectors from drive
-	mov al, 0x01 ;the number of the sector we want to read (1)
+	mov al, 0x17 ;the number of the sector we want to read (17)
 	int 0x13 ;calls BIOS disk services interrupt
 	jc .failed_reading ;if the carry flag is set the reading failed
     ret
