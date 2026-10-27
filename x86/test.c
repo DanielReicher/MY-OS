@@ -1,3 +1,5 @@
+#include "stdint.h"
+
 #define VGA_ADDR ((unsigned char*)0xB8000)
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
