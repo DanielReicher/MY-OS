@@ -9,8 +9,19 @@ typedef struct
     uint8_t reserved; //set to zero
     uint8_t attributes; //type and attributes, see the IDT page
     uint16_t isr_high; //the higher 16 bits of the isr adderss
-};
+} __attribute__((packed)) idt_entry_t; //attribute is a compiler extension; no padding
 
+
+__attribute__((aligned(0x10)))
+static idt_entry_t idt[256]; // Create an array of IDT entries; aligned for performance
+
+typedef struct //idtr (idt register) struct
+{
+    uint16_t limit;
+    uint32_t base;
+} __attribute__((packed)) idt_entry_t;
+
+static idtr_t idtr;
 
 
 #endif

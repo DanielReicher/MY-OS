@@ -11,9 +11,13 @@
 void clear_screen();
 void puts (const char *str);
 
+__attribute__((noreturn))
+void exception_handdler(void);
+
 void _start(void) 
 {
     const char *str = KERNEL_MSG;
+
 
     clear_screen();
     puts(str);
@@ -66,3 +70,7 @@ void puts(const char *str)
 
 }
 
+void exception_handdler()
+{
+    __asm__ volatile ("cli; hlt"); //hangs the computer
+}
