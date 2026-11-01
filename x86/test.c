@@ -12,7 +12,7 @@ void clear_screen();
 void puts (const char *str);
 
 __attribute__((noreturn))
-void exception_handdler(void);
+void exception_handler(void);
 
 void _start(void) 
 {
@@ -70,7 +70,7 @@ void puts(const char *str)
 
 }
 
-void exception_handdler()
+void exception_handler()
 {
     __asm__ volatile ("cli; hlt"); //hangs the computer
 }
