@@ -28,7 +28,7 @@ print:
 	ret ;return
 
 configure:
-    ;configure and call read_sector to load sector 2 to 0
+    ;configure and call read_sector to load sector 2 to some place in RAM
 	mov ax, 0x0000
 	mov es, ax ;dest segment
 	mov bx, 0x7E00 ;dest offsset
