@@ -19,9 +19,9 @@ typedef struct //idtr (idt register) struct
 {
     uint16_t limit;
     uint32_t base;
-} __attribute__((packed)) idt_r;
+} __attribute__((packed)) idtr_r;
 
-static idtr_t idtr;
+static idtr_r idtr;
 
 
 
