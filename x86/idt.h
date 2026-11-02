@@ -4,6 +4,8 @@
 #include "stdint.h"
 #include "stdbool.h"
 
+#define IDT_MAX_DESCRIPTORS 256
+
 typedef struct idt_entry_t
 {
     uint16_t isr_low; //the lower 16 bits of isr address
@@ -27,9 +29,9 @@ static idt_entry_t idt[256]; // Create an array of IDT entries; aligned for perf
 
 static idtr_t idtr;
 
-static bool vectors[256]; //number of IDT's entries
+static bool vectors[IDT_MAX_DESCRIPTORS ]; //number of IDT's entries
 
-extern void* isr_stub_table[];
+extern void* isr_stub_table[]; //save the interrupts functions addresses
 
 
 #endif
