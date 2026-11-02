@@ -2,7 +2,7 @@
 #define IDT_H
 
 #include "stdint.h"
-typedef struct 
+typedef struct idt_entry_t
 {
     uint16_t isr_low; //the lower 16 bits of isr address
     uint16_t kernel_cs; //the GDT segment selector that the cpu will load into code segment before calling the ISR 
@@ -15,13 +15,13 @@ typedef struct
 __attribute__((aligned(0x10)))
 static idt_entry_t idt[256]; // Create an array of IDT entries; aligned for performance
 
-typedef struct //idtr (idt register) struct
+typedef struct idtr_t //idtr (idt register) struct
 {
     uint16_t limit;
     uint32_t base;
-} __attribute__((packed)) idtr_r;
+} __attribute__((packed)) idtr_t;
 
-static idtr_r idtr;
+static idtr_t idtr;
 
 
 
