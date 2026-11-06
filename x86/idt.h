@@ -1,3 +1,6 @@
+//------------------IDT---------------------------
+//IDT - Interrupt descriptor table - A data structure residing in memory that tells the CPU the location of each ISR to execute for each interrupt number.
+
 #ifndef IDT_H
 #define IDT_H
 
@@ -21,8 +24,8 @@ typedef struct idtr_t //idtr (idt register) struct
     uint32_t base;
 } __attribute__((packed)) idtr_t;
 
-void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags); //a function to define the entries
-void idt_init(void);
+void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags); //a function to set an IDT entry for a specific interrupt vector
+void idt_init(void); //initializes the Interrupt Descriptor Table
 
 __attribute__((aligned(0x10)))
 static idt_entry_t idt[256]; // Create an array of IDT entries; aligned for performance
