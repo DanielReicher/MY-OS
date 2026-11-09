@@ -11,9 +11,11 @@ void PIC_sendEOI(uint8_t irq)
 }
 
 void PIC_remap(int offset1, int offset2)
-{   /* Starts the initializtion sequnece (in cascade mode).
+{   /*
+    Starts the initializtion sequnece (in cascade mode).
     The or operation indicates that we are also using icw4.
-    We need to send this information both slave and master PIC */
+    We need to send this information both slave and master PIC 
+    */
     outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4); 
     io_wait();
     outb(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
@@ -22,8 +24,10 @@ void PIC_remap(int offset1, int offset2)
     io_wait();
     outb(PIC2_DATA, offset2);  //icw2- slave pic vector offset
     io_wait();
-    /*icw3- tells the master pic that there is a slave pic at irq2.
-    The shift left operation returns 4 */
+    /*
+    icw3- tells the master pic that there is a slave pic at irq2.
+    The shift left operation returns 4 
+    */
     outb(PIC1_DATA, 1 << CASCADE_IRQ);
     io_wait();
     outb(PIC2_DATA, CASCADE_IRQ); //icw3- tells the slave pic its cascade identity
@@ -38,4 +42,14 @@ void PIC_remap(int offset1, int offset2)
     //unmask both pics
     outb(PIC1_DATA, 0);
     outb(PIC2_DATA, 0);
+}
+
+void PIC_disable(void)
+{
+    /* 
+    0xff equal to 11111111.
+    pic turns off intrrupts when he get 1, turn on when he gets 0 
+    */
+    outb(PIC1_DATA, 0xff);
+    outb(PIC2_DATA, 0xff);
 }
