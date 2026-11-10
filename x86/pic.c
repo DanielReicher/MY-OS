@@ -72,4 +72,8 @@ void IRQ_set_mask(uint8_t IRQline)
         port = PIC2_DATA;
         IRQline -= 8;
     }
+
+    value = inb(port) | (1 << IRQline); //the or operation forces the IRQline bit to turn ON (1) while preserving all other original bits unchanged
+
+    outb(port, value);
 }

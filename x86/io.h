@@ -17,7 +17,7 @@ previous IO operation (ports) finish
 void io_wait();
 
 /*
-
+a function to get the interrupt into the cpu
 */
 uint8_t __attribute__((cdecl)) inb(uint16_t port);
 
