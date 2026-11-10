@@ -96,3 +96,15 @@ void PIC_clear_mask(uint8_t IRQline)
     value = inb(port) & ~ (1 << IRQline); //the and not operations clears the IRQline bit to 0 while keeping all other bits exactly the same
     outb(port, value);
 }
+
+static uint16_t __pic_get_irq_reg(int ocw3)
+{
+    /* 
+    OCW3 to PIC CMD to get the register values.
+    PIC2 is chained, and represents IRQs 8-15.  
+    PIC1 is IRQs 0-7, with 2 being the chain 
+    */
+    outb(PIC1_COMMAND, ocw3);
+    outb(PIC2_COMMAND, ocw3);
+    return (inb(PIC2_COMMAND) << 8 | inb(PIC1_COMMAND)); //status of both pics and returning them together to a 16 bit
+}
