@@ -108,3 +108,13 @@ static uint16_t __pic_get_irq_reg(int ocw3)
     outb(PIC2_COMMAND, ocw3);
     return (inb(PIC2_COMMAND) << 8 | inb(PIC1_COMMAND)); //status of both pics and returning them together to a 16 bit
 }
+
+uint16_t pic_get_irr(void)
+{
+    return __pic_get_irq_reg(PIC_READ_IRR);
+}
+
+uint16_t pic_get_isr(void)
+{
+    return __pic_get_irq_reg(PIC_READ_ISR);
+}

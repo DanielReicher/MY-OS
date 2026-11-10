@@ -53,15 +53,32 @@ disabling the pic intrrupts
 void PIC_disable(void);
 
 /*
+a function disable interrputs.
 IMR- Interrupt Mask Register, 8 bits wide. 
 This register is a bitmap of the request lines going into the PIC.
 When a bit is set, the PIC ignores the request and continues normal operation. 
 Masking IRQ2 will cause the Slave PIC to stop raising IRQs.
 */
 void IRQ_set_mask(uint8_t IRQline);
+
+/*
+a function to enable interrupts
+*/
 void IRQ_clear_mask(uint8_t IRQline);
+
+/*
+healper function to get the irq register
+*/
 static uint16_t __pic_get_irq_reg(int ocw3);
+
+/* 
+a function that returns the combined value of the cascaded PICs irq request register 
+*/
 uint16_t pic_get_irr(void);
+
+/* 
+a function that returns the combined value of the cascaded PICs in-service register 
+*/
 uint16_t pic_get_isr(void);
 
 
