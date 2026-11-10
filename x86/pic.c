@@ -77,3 +77,22 @@ void IRQ_set_mask(uint8_t IRQline)
 
     outb(port, value);
 }
+
+void PIC_clear_mask(uint8_t IRQline)
+{
+    uint8_t port;
+    uint8_t value;
+
+    if(IRQline < 8 ) //interrupt numbers 0-7 are for the master pic
+    {
+        port = PIC1_DATA;
+    }
+    else //interrupt numbers 8-15 are for the slave pic
+    {
+        port = PIC2_DATA;
+        IRQline -= 8;
+    }
+
+    value = inb(port) & ~ (1 << IRQline); //the and not operations clears the IRQline bit to 0 while keeping all other bits exactly the same
+    outb(port, value);
+}
