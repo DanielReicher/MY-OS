@@ -1,7 +1,9 @@
-//----------PIC-----------------
-//PIC- an interrupt controller that manages interrupt signals received from devices by combining multiple interrupts into a single interrupt output. 
-//The PIC manages interrupt requests from peripheral devices, prioritizes them, and sends them to the CPU
-
+/*
+----------PIC-----------------
+PIC- an interrupt controller that manages interrupt signals received from devices by combining multiple interrupts into a single interrupt output. 
+The PIC manages interrupt requests from peripheral devices, prioritizes them, and sends them to the CPU
+THIS IS A PIC DRIVERR!! :)
+*/
 #ifndef PIC_H
 #define PIC_H
 
