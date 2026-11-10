@@ -5,9 +5,20 @@
 
 #define UNUSED_PORT 0x80
 
-void outb(uint16_t port, uint8_t val);
-/* Hello!! This function is meant to wait a small enough time to let a
-   previous IO operation (ports) finish */
+/*
+a function to output the val in the port :)
+*/
+void  __attribute__((cdecl)) outb(uint16_t port, uint8_t val);
+
+/* 
+Hello!! This function is meant to wait a small enough time to let a
+previous IO operation (ports) finish 
+*/
 void io_wait();
+
+/*
+
+*/
+uint8_t __attribute__((cdecl)) inb(uint16_t port);
 
 #endif

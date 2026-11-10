@@ -35,14 +35,29 @@
 #define PIC_READ_ISR    0x0a //ocw3 (operation command word 3) irq ready next cmd read
 #define PIC_READ_IRR    0x0b //ocw3 (operation command word 3) irq service next cmd read
 
+/*
+send the intrrupt
+*/
 void PIC_sendEOI(uint8_t irq); //eoi- end of interrupt
+
 /*
 offset1 - vector offset for master PIC
             vectors on the master become offset1..offset1+7
 offset2 - same for slave PIC: offset2..offset2+7 
 */
 void PIC_remap(int offset1, int offset2);
+
+/*
+disabling the pic intrrupts
+*/
 void PIC_disable(void);
+
+/*
+IMR- Interrupt Mask Register, 8 bits wide. 
+This register is a bitmap of the request lines going into the PIC.
+When a bit is set, the PIC ignores the request and continues normal operation. 
+Masking IRQ2 will cause the Slave PIC to stop raising IRQs.
+*/
 void IRQ_set_mask(uint8_t IRQline);
 void IRQ_clear_mask(uint8_t IRQline);
 static uint16_t __pic_get_irq_reg(int ocw3);

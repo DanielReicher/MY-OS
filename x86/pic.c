@@ -2,7 +2,11 @@
 
 void PIC_sendEOI(uint8_t irq)
 {
-    if(irq >= 8) 
+    /*
+    interrupt numbers 0-7 are for the master pic
+    interrupt numbers 8-15 are for the slave pic
+    */
+    if(irq >= 8)  
     {
         //if irq came from the slave pic
         outb(PIC2_COMMAND, PIC_EOI); //send the command to the slave pic 
@@ -52,4 +56,20 @@ void PIC_disable(void)
     */
     outb(PIC1_DATA, 0xff);
     outb(PIC2_DATA, 0xff);
+}
+
+void IRQ_set_mask(uint8_t IRQline)
+{
+    uint8_t value;
+    uint8_t port;
+    
+    if(IRQline < 8 ) //interrupt numbers 0-7 are for the master pic
+    {
+        port = PIC1_DATA;
+    }
+    else //interrupt numbers 8-15 are for the slave pic
+    {
+        port = PIC2_DATA;
+        IRQline -= 8;
+    }
 }
