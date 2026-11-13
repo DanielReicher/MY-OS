@@ -7,48 +7,69 @@
 
 # ------ Helpers ---------------------------------------------------------------
 command_exists = $(shell command -v $(1))
-choose_command = $(if $(call command_exists,$(1)),$(1),$(2))
 
-# ------ Configuration ---------------------------------------------------------
-# These variables are for you to configure. Default values are approximations.
-CC := $(call choose_command,i386-elf-gcc,gcc) # the C compiler - i386-elf-gcc or gcc
-LD := $(call choose_command,i386-elf-ld,ld) # the linker - i386-elf-ld or ld
-OBJCOPY := $(call choose_command,i386-elf-objcopy,objcopy)
+# ------ Tool Flags ------------------------------------------------------------
+# These are just some of the flags. Certain flags should be set in the Toolchain
+# section instead.
+gcc_flags := -m32 -nostdlib -ffreestanding -nostartfiles
+ld_flags := -Ttext 0x7E00 -e 0
+objcopy :=
+
+# ------ Toolchain -------------------------------------------------------------
+# On Daniel's machine we use a standard GCC version, but on Jonathan's we use
+# the i386 version of GCC (our target architecture). That means that on Daniel's
+# machine we *cross-compile* (that's what it's called). This part is where we
+# decide whether to cross-compile or not.
+target_arch_gcc     := i386-elf-gcc
+target_arch_ld      := i386-elf-ld
+target_arch_objcopy := i386-elf-objcopy
+has_gcc := $(call command_exists,gcc)
+has_target_arch_gcc := $(call command_exists,$(target_arch_gcc))
+ifneq ($(has_target_arch_gcc),) # If this did not return an empty string...
+	gcc := $(target_arch_gcc)
+	ld := $(target_arch_ld)
+	objcopy := $(target_arch_objcopy)
+else
+	gcc := gcc
+	ld := ld
+	ld_flags += -m elf_i386
+	objcopy := objcopy
+endif
 
 # ------ Files and Directories -------------------------------------------------
-SRC := $(wildcard *.asm)
-BOOT := boot.asm
-BUILD_DIR := build
-IMG := $(BUILD_DIR)/floppy.img
-BIN := $(BUILD_DIR)/boot.bin
+src := $(wildcard *.asm)
+boot := boot.asm
+build_dir := build
+img := $(build_dir)/floppy.img
+bin := $(build_dir)/boot.bin
 
 # Define a rule called 'run' that builds and runs. This rule is the default
 # because it is first.
 .PHONY: run
-run: $(IMG)
-	qemu-system-i386 -fda $(IMG)
+run: $(img)
+	qemu-system-i386 -fda $(img)
 
-$(IMG): $(BIN) test.bin | $(BUILD_DIR)
+$(img): $(bin) test.bin | $(build_dir)
 	@# Make sure we build the file completely from scratch.
 	rm -f $@
 	dd if=/dev/zero of=$@ bs=1024 count=1440
-	dd if=$(BIN) of=$@ conv=notrunc
+	dd if=$(bin) of=$@ conv=notrunc
 	dd if=test.bin of=$@ conv=notrunc bs=512 seek=1
 
-$(BIN): $(SRC) | $(BUILD_DIR)
-	nasm $(BOOT) -f bin -o $@
+$(bin): $(src) | $(build_dir)
+	nasm $(boot) -f bin -o $@
 
 test.o: test.c
-	$(CC) -m32 -nostdlib -ffreestanding -nostartfiles test.c -c -o test.o
+	$(gcc) $(gcc_flags) test.c -c -o test.o
 
 test.out: test.o
-	$(LD) -m elf_i386 -Ttext 0x7E00 -e 0 -o test.out test.o
+	$(ld) $(ld_flags) test.o -o test.out
 	
 test.bin: test.out
 	@# The `-O` flag specifies the output format.
-	$(OBJCOPY) -O binary test.out test.bin
+	$(objcopy) $(objcopy_flags) -I elf32-i386 -O binary test.out test.bin
 
-$(BUILD_DIR):
+$(build_dir):
 	mkdir -p $@
 
 # Define a rule called 'clean'.
