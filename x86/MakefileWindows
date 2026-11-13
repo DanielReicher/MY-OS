@@ -7,13 +7,13 @@
 
 # ------ Helpers ---------------------------------------------------------------
 command_exists = $(shell command -v $(1))
-this_or_that = $(if $(call command_exists,$(1)),$(1),$(2))
+choose_command = $(if $(call command_exists,$(1)),$(1),$(2))
 
 # ------ Configuration ---------------------------------------------------------
 # These variables are for you to configure. Default values are approximations.
-CC := $(call this_or_that,i386-elf-gcc,gcc) # the C compiler - i386-elf-gcc or gcc
-LD := $(call this_or_that,i386-elf-ld,ld) # the linker - i386-elf-ld or ld
-OBJCOPY := $(call this_or_that,i386-elf-objcopy,objcopy)
+CC := $(call choose_command,i386-elf-gcc,gcc) # the C compiler - i386-elf-gcc or gcc
+LD := $(call choose_command,i386-elf-ld,ld) # the linker - i386-elf-ld or ld
+OBJCOPY := $(call choose_command,i386-elf-objcopy,objcopy)
 
 # ------ Files and Directories -------------------------------------------------
 SRC := $(wildcard *.asm)
