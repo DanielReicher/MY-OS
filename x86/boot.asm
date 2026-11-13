@@ -63,7 +63,9 @@ main:
 	mov si, msg_hello
 	call print
 	call configure
-	call enter_protected_mode
+
+	;to-do: detecte memory
+	call enter_protected_mode 
 
 
 .halt: ;infinite loop
