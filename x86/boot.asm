@@ -62,9 +62,11 @@ main:
 
 	mov si, msg_hello
 	call print
+
+	call detectMemory
+
 	call configure
 
-	;to-do: detecte memory
 	call enter_protected_mode 
 
 
@@ -79,7 +81,8 @@ main:
 msg_hello: db 'Hello, OS World!', 0x0D, 0x0A, 0 
 msg_reading_error db "Disk Read Error" , 0
 
-%include "switchTo32.asm"
+%include "stage2.asm"
+%include "detectMemory.asm"
 
 msg_protected: db 'Protected Mode is active', 0
 
