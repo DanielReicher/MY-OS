@@ -8,11 +8,16 @@
 #define CYAN_ON_BLACK 0x0B
 #define WHITE_ON_BLACK 0x0f
 
+#define MEM_EBDA_TABLE_ADRRESS 0x504
+#define MEM_EBDA_TABLE_SIZE_ADRRESS 0x500
+
 void clear_screen();
 void puts (const char *str);
 
 __attribute__((noreturn))
 void exception_handler(void);
+
+uint32_t ebda_table_size();
 
 void _start(void) 
 {
@@ -21,6 +26,7 @@ void _start(void)
 
     clear_screen();
     puts(str);
+    ebda_table_size();
 
     while (1) {
         asm (
@@ -73,4 +79,11 @@ void puts(const char *str)
 void exception_handler()
 {
     __asm__ volatile ("cli; hlt"); //hangs the computer
+}
+
+uint32_t ebda_table_size()
+{
+    uint32_t *size = 0;
+    size = (uint32_t*) MEM_EBDA_TABLE_ADRRESS;
+    puts(size);
 }

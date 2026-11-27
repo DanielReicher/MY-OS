@@ -26,7 +26,7 @@ detectMemory:
     ; Set some parameters
     mov ax, MEM_INT_AX
     mov cx, MEM_RECORD_SIZE
-    mov dx, MEM_MAGIC_NUMBER ;for APCI 
+    mov edx, MEM_MAGIC_NUMBER ;for APCI 
     int MEM_INT
 
     ; Are we done?
