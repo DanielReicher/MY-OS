@@ -5,7 +5,7 @@
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 
-#define KERNEL_MSG "HELLO FROM THE KERNEL\nnew line"
+#define KERNEL_MSG "HELLO FROM THE KERNEL\nEBDA table size:\n"
 #define CYAN_ON_BLACK 0x0B
 #define WHITE_ON_BLACK 0x0f
 
@@ -22,10 +22,11 @@ void exception_handler(void);
 
 uint32_t ebda_table_size(void);
 
+static unsigned int vga_index = 0;
+
 void _start(void) 
 {
     const char *str = KERNEL_MSG;
-
 
     clear_screen();
     puts(str);
@@ -51,13 +52,12 @@ void clear_screen()
         vga_addr[i+1] = WHITE_ON_BLACK;
         i = i+2;
     }
-
+    vga_index = 0; //to print in the start of the screen
 }
 
 void puts(const char *str)
 {
     char *vga_addr = VGA_ADDR;
-    unsigned int i = 0;
     unsigned int j = 0;
     unsigned int row = 0;
 
@@ -65,15 +65,15 @@ void puts(const char *str)
     {
         if(str[j] == '\n')
         {
-            row = i /(VGA_WIDTH * 2);
-            i = (row + 1) * VGA_WIDTH * 2;
+            row = vga_index /(VGA_WIDTH * 2);
+            vga_index = (row + 1) * VGA_WIDTH * 2;
             j++;
             continue;
         }
         
-        vga_addr[i] = str[j];
-        vga_addr[i+1] = CYAN_ON_BLACK;
-        i = i+2;
+        vga_addr[vga_index] = str[j];
+        vga_addr[vga_index+1] = CYAN_ON_BLACK;
+        vga_index = vga_index+2;
         j++;
     }
 
@@ -94,5 +94,7 @@ uint32_t ebda_table_size()
 
     itoa(size_bytes, buffer, DECIMAL_BASE);
     puts(buffer);
+
+    return size_bytes;
 
 }
