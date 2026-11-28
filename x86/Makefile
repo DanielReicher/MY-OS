@@ -42,6 +42,8 @@ boot := boot.asm
 build_dir := build
 img := $(build_dir)/floppy.img
 bin := $(build_dir)/boot.bin
+c_obj := test.o stdlib.o
+
 
 # Define a rule called 'run' that builds and runs. This rule is the default
 # because it is first.
@@ -59,11 +61,11 @@ $(img): $(bin) test.bin | $(build_dir)
 $(bin): $(src) | $(build_dir)
 	nasm $(boot) -f bin -o $@
 
-test.o: test.c
-	$(gcc) $(gcc_flags) test.c -c -o test.o
+%.o: %.c
+	$(gcc) $(gcc_flags) $< -c -o $@
 
-test.out: test.o
-	$(ld) $(ld_flags) test.o -o test.out
+test.out: $(c_obj)
+	$(ld) $(ld_flags) $(c_obj) -o test.out
 	
 test.bin: test.out
 	@# The `-O` flag specifies the output format.
@@ -76,4 +78,5 @@ $(build_dir):
 .PHONY: clean
 clean:
 	rm -r -f build
-	rm -f test.o test.out test.bin
+	rm -f $(c_obj) test.out test.bin
+

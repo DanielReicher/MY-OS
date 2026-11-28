@@ -1,4 +1,5 @@
 #include "stdint.h"
+#include "stdlib.h"
 
 #define VGA_ADDR ((unsigned char*)0xB8000)
 #define VGA_WIDTH 80
@@ -11,13 +12,15 @@
 #define MEM_EBDA_TABLE_ADRRESS 0x504
 #define MEM_EBDA_TABLE_SIZE_ADRRESS 0x500
 
+#define DECIMAL_BASE 10
+
 void clear_screen();
 void puts (const char *str);
 
 __attribute__((noreturn))
 void exception_handler(void);
 
-uint32_t ebda_table_size();
+uint32_t ebda_table_size(void);
 
 void _start(void) 
 {
@@ -83,7 +86,13 @@ void exception_handler()
 
 uint32_t ebda_table_size()
 {
-    uint32_t *size = 0;
-    size = (uint32_t*) MEM_EBDA_TABLE_ADRRESS;
-    puts(size);
+    char buffer[50];
+    
+    // Read the first 16-bit value at the EBDA address (size in KiB)
+    uint16_t size_kb = *(volatile uint16_t*)MEM_EBDA_TABLE_ADRRESS;
+    uint32_t size_bytes = (uint32_t)size_kb * 1024;
+
+    itoa(size_bytes, buffer, DECIMAL_BASE);
+    puts(buffer);
+
 }
