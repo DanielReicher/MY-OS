@@ -5,12 +5,12 @@
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 
-#define KERNEL_MSG "HELLO FROM THE KERNEL\nEBDA table size:\n"
+#define KERNEL_MSG "HELLO FROM THE KERNEL\nbios's memory map table size:\n"
 #define CYAN_ON_BLACK 0x0B
 #define WHITE_ON_BLACK 0x0f
 
-#define MEM_EBDA_TABLE_ADRRESS 0x504
-#define MEM_EBDA_TABLE_SIZE_ADRRESS 0x500
+#define MEM_TABLE_ADRRESS 0x504
+#define MEM_TABLE_SIZE_ADRRESS 0x500
 
 #define DECIMAL_BASE 10
 
@@ -20,7 +20,7 @@ void puts (const char *str);
 __attribute__((noreturn))
 void exception_handler(void);
 
-uint32_t ebda_table_size(void);
+uint32_t memory_map_table_size(void);
 
 static unsigned int vga_index = 0;
 
@@ -30,7 +30,7 @@ void _start(void)
 
     clear_screen();
     puts(str);
-    ebda_table_size();
+    memory_map_table_size();
 
     while (1) {
         asm (
@@ -84,13 +84,12 @@ void exception_handler()
     __asm__ volatile ("cli; hlt"); //hangs the computer
 }
 
-uint32_t ebda_table_size()
+uint32_t memory_map_table_size()
 {
     char buffer[50];
     
     // Read the first 16-bit value at the EBDA address (size in KiB)
-    uint16_t size_kb = *(volatile uint16_t*)MEM_EBDA_TABLE_ADRRESS;
-    uint32_t size_bytes = (uint32_t)size_kb * 1024;
+    uint16_t size_bytes = *(volatile uint16_t*)MEM_TABLE_SIZE_ADRRESS;
 
     itoa(size_bytes, buffer, DECIMAL_BASE);
     puts(buffer);

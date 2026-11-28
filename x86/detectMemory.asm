@@ -2,8 +2,8 @@ MEM_INT equ 0x15
 MEM_INT_AX equ 0xE820
 MEM_RECORD_SIZE equ 24
 MEM_MAGIC_NUMBER equ 0x534D4150
-MEM_EBDA_TABLE_ADDRESS_HIGH equ 0
-MEM_EBDA_TABLE_ADDRESS_LOW equ 0x500 ;Extended BIOS Data Area
+MEM_TABLE_ADDRESS_HIGH equ 0
+MEM_TABLE_ADDRESS_LOW equ 0x500 ;Extended BIOS Data Area
 
 detectMemory:
     bits 16
@@ -16,42 +16,42 @@ detectMemory:
     ; protected mode. This let's us keep the bootloader small.
     ;
     ; Set the target address
-    mov ax, MEM_EBDA_TABLE_ADDRESS_HIGH
+    mov ax, MEM_TABLE_ADDRESS_HIGH
     mov es, ax 
-    lea di, [MEM_EBDA_TABLE_ADDRESS_LOW + 4]
-    xor bx, bx 
+    lea di, [MEM_TABLE_ADDRESS_LOW + 4]
+    xor ebx, ebx 
     xor si, si
 
 .loop:
     ; Set some parameters
-    mov ax, MEM_INT_AX
-    mov cx, MEM_RECORD_SIZE
+    mov eax, MEM_INT_AX
+    mov ecx, MEM_RECORD_SIZE
     mov edx, MEM_MAGIC_NUMBER ;for APCI 
     int MEM_INT
 
     ; Are we done?
     ;if carry flag is set or bx = 0 we done
 
-    lahf ;transfers the low byte of the flags word to AH. The bits, from MSB to LSB, are sign, zero, indeterminate, auxiliary, carry, indeterminate, parity, indeterminate, and carry.
-    
-    ;checking if bx = 0
-    test bx, bx 
-    jz .if_bx_zero
-
     ;checking if carry flag set
-    test ah, ah
-    jnz .if_carry_set
+    jc .if_carry_set
+
+    ;checking if bx = 0
+    test ebx, ebx 
+    jz .if_bx_zero
 
     ;if not done- increment the address, es:di by the record size
     add di, MEM_RECORD_SIZE ;the pointer wont overflow so we dont need to use es
     add si, MEM_RECORD_SIZE
 
     jnc .loop
+    mov [es:MEM_TABLE_ADDRESS_LOW], si
     ret
 
 .if_bx_zero:
     add si, MEM_RECORD_SIZE 
+    mov [es:MEM_TABLE_ADDRESS_LOW], si
     ret
 
 .if_carry_set:
+    mov [es:MEM_TABLE_ADDRESS_LOW], si
     ret
